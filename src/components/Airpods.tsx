@@ -1,16 +1,19 @@
 import React, { useEffect } from 'react';
 
+// https://codepen.io/GreenSock/pen/yLOVJxd
+
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 import '../assets/css/Airpods.scss';
 
+import imageSequence from '../assets/video/imageSequence/index';
+
 gsap.registerPlugin(ScrollTrigger);
-ScrollTrigger.saveStyles('.container-hero div');
+ScrollTrigger.saveStyles('.parallax-container div');
 
 
 const Airpods = () => {
-
 	useEffect(() => {
 		ScrollTrigger.matchMedia({
 
@@ -20,7 +23,7 @@ const Airpods = () => {
 				// These ScrollTriggers will be reverted/killed when the media query doesn't match anymore.
 				// Timeline for fading in and fading out the text
 
-				var targets = document.querySelectorAll('.container-hero div');
+				var targets = document.querySelectorAll('.parallax-container div');
 
 				targets.forEach(target => {
 					gsap.timeline({
@@ -40,12 +43,35 @@ const Airpods = () => {
 				});
 
 			},
+			// mobile
+			'(max-width: 799px)': function() {
+				// The ScrollTriggers created inside these functions are segregated and get
+				// reverted/killed when the media query doesn't match anymore.
+				var targets = document.querySelectorAll('.parallax-container div');
+
+				targets.forEach(target => {
+					gsap.timeline({
+						defaults: { duration: 1 },
+						scrollTrigger: {
+							trigger: target,
+							markers: true,
+							scrub: true,
+							start: 'center 50%',
+							end: 'bottom -50%',
+							pin: true,
+						},
+					})
+						.fromTo(target, { y: 25 }, { y: -25 })
+						.from(target, { opacity: 0, duration: 0.2 }, 0)
+						.to(target, { opacity: 0, duration: 0.2 }, 0.8);
+				});
+			},
 
 			// all
 			'all': function() {
-				console.clear();
+				// console.clear();
 
-				const canvas = document.getElementById('hero-lightpass') as HTMLCanvasElement;
+				const canvas = document.getElementById('parallaxCanvas') as HTMLCanvasElement;
 
 				const context = canvas!.getContext('2d');
 				canvas.width = 1158;
@@ -53,7 +79,9 @@ const Airpods = () => {
 
 
 				const frameCount = 147;
-				const currentFrame = index => (
+
+				const currentFrame = (index : number) => (
+					// imageSequence[index + 1]
 					`https://www.apple.com/105/media/us/airpods-pro/2019/1299e2f5_9206_4470_b28e_08307a42f19b/anim/sequence/large/01-hero-lightpass/${(index + 1).toString().padStart(4, '0')}.jpg`
 				);
 
@@ -92,32 +120,31 @@ const Airpods = () => {
 					},
 				});
 
-				tl.from('#hero-lightpass', {
+				tl.from('#parallaxCanvas', {
 					scale: 1.2,
 					duration: 1,
 				}, 0)
-					.to('#hero-lightpass', {
+					.to('#parallaxCanvas', {
 						scale: 1,
-						duration: 0.25,
+						duration: 1,
 					}, 0.75);
 			},
 		});
 	}, []);
 
 	return (
-		<div className="bg">
-			<canvas id="hero-lightpass"></canvas>
-			<div id="container">
-				<h1>AirPods Pro</h1>
+		<div className="border-b-8 border-red-900 bg border-bottom">
+			<canvas id="parallaxCanvas"></canvas>
+			<div id="parallax-title">
+				<h1>AIRPODS</h1>
 			</div>
-			<div className="container-hero">
+			<div className="parallax-container">
 				<div className="h1">Active Noise Cancellation for immersive sound.</div>
 				<div className="h1">Transparency mode for hearing what’s happening around you.</div>
 				<div className="h1">A customizable fit for all-day comfort.</div>
 				<div className="h1">Magic like you’ve never heard.</div>
 			</div>
 		</div>
-
 	);
 };
 
