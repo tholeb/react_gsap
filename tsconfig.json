@@ -6,6 +6,11 @@
       "dom.iterable",
       "esnext"
     ],
+    "types": [
+      "node",
+      "webpack-env", // here
+      "react"
+    ],
     "allowJs": false,
     "skipLibCheck": true,
     "esModuleInterop": true,
